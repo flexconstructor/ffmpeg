@@ -1,37 +1,26 @@
-FFMPEG for Docker on Centos6
+FFMPEG for Docker on Centos7 with Supervisor launcher
 ============================
 
 This repo has a Dockerfile to create a Docker image wth FFMPEG. It compiles FFMPEG from sources following instructions from the [Centos Compilation Guide](https://trac.ffmpeg.org/wiki/CompilationGuide/Centos).
 
-You can install the latest build of this image by running `docker pull jrottenberg/ffmpeg`.
+You can install the latest build of this image by running `docker pull flexconstructor/free-media-server’.
 
-This image can likely be used as a base for a networked encoding farm, based on centos.
+This image can likely be used as a base for a networked encoding farm, based on centos 7.
 
 Test
 ----
 
 ```
-$ docker run jrottenberg/ffmpeg
-ffmpeg version 2.4.6 Copyright (c) 2000-2015 the FFmpeg developers
-  built on Mar  2 2015 10:45:40 with gcc 4.4.7 (GCC) 20120313 (Red Hat 4.4.7-11)
-  configuration: --prefix=/usr/local --extra-cflags=-I/usr/local/include --extra-ldflags=-L/usr/local/lib --bindir=/usr/local/bin --extra-libs=-ldl --enable-version3 --enable-libfaac --enable-libmp3lame --enable-libx264 --enable-libx265 --enable-libxvid --enable-gpl --enable-postproc --enable-nonfree --enable-avresample --enable-libfdk_aac --disable-debug --enable-small
-  libavutil      54.  7.100 / 54.  7.100
-  libavcodec     56.  1.100 / 56.  1.100
-  libavformat    56.  4.101 / 56.  4.101
-  libavdevice    56.  0.100 / 56.  0.100
-  libavfilter     5.  1.100 /  5.  1.100
-  libavresample   2.  1.  0 /  2.  1.  0
-  libswscale      3.  0.100 /  3.  0.100
-  libswresample   1.  1.100 /  1.  1.100
-  libpostproc    53.  0.100 / 53.  0.100
-Hyper fast Audio and Video encoder
+$ docker run flexconstructor/free-media-server
+ffmpeg version git-2015-10-25-6b5412c Copyright (c) 2000-2015 the FFmpeg developers built with gcc 4.8.3 (GCC) 20140911 (Red Hat 4.8.3-9) 
+configuration: --prefix=/usr/local/ffmpeg_build --extra-cflags=-I/usr/local/ffmpeg_build/include --extra-ldflags=-L/usr/local/ffmpeg_build/lib --bindir=/usr/local/bin --pkg-config-flags=--static --enable-gpl --enable-nonfree --enable-libfdk-aac --enable-libfreetype --enable-libmp3lame --enable-libopus --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libx265 libavutil 55. 4.100 / 55. 4.100 libavcodec 57. 9.100 / 57. 9.100 libavformat 57. 11.100 / 57. 11.100 libavdevice 57. 0.100 / 57. 0.100 libavfilter 6. 13.100 / 6. 13.100 libswscale 4. 0.100 / 4. 0.100 libswresample 2. 0.100 / 2. 0.100 libpostproc 54. 0.100 / 54. 0.100 Hyper fast Audio and Video encoder
 [...]
 ```
 
 Capture output from the container to the host running the command
 
 ```
- docker run jrottenberg/ffmpeg \
+ docker run flexconstructor/free-media-server \
             -i http://url/to/media.mp4 \
             -stats \
             $ffmpeg_options    -   > out.mp4
@@ -40,7 +29,7 @@ Capture output from the container to the host running the command
 ### Example
 
 ```
- docker run jrottenberg/ffmpeg -stats  \
+ docker run flexconstructor/free-media-server -stats  \
         -i http://archive.org/download/thethreeagesbusterkeaton/Buster.Keaton.The.Three.Ages.ogv \
         -loop 0  \
         -final_delay 500 -c:v gif -f gif -ss 00:49:42 -t 5 - > trow_ball.gif
@@ -50,6 +39,6 @@ See what's inside the beast
 ---------------------------
 
 ```
-$ docker run -ti --entrypoint='bash'  jrottenberg/ffmpeg
+$ docker run -ti --entrypoint='bash'  flexconstructor/free-media-server
 bash-4.1#
 ```
