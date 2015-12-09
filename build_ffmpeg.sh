@@ -28,7 +28,7 @@ rm -rf ${DIR}
 DIR=$(mktemp -d) && cd ${DIR} && \
 hg clone https://bitbucket.org/multicoreware/x265 && \
 cd x265/build/linux && \
-cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${SRC}/ffmpeg_build" -DENABLE_SHARED:bool=off ../../source  && \
+PATH="${SRC}/bin:$PATH" cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${SRC}/ffmpeg_build" -DENABLE_SHARED:bool=off ../../source && \
 make && \
 make install && \
 rm -rf ${DIR}

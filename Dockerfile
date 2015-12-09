@@ -10,7 +10,7 @@ ENV           LAME_VERSION    3.99.5
 ENV           SRC             /usr/local
 ENV           PKG_CONFIG_PATH ${SRC}/lib/pkgconfig
 ENV           GOLANG_VERSION 1.5.1
-ENV           GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
+ENV           GOLANG_DOWNLOAD_URL https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz
 ENV           GOLANG_DOWNLOAD_SHA1 46eecd290d8803887dec718c691cc243f2175fe0
 ENV           GOPATH /go
 ENV           PATH $GOPATH/bin:/usr/local/go/bin:$PATH
@@ -19,16 +19,13 @@ ENV           GO_DOCKER_LIB https://github.com/docker-library/golang.git
 # ------- init dependecies -----------
 RUN set -euo pipefail
 RUN yum update -y
-RUN yum install -y autoconf automake g++ gcc gcc-c++ libc6-dev git libtool wget make nasm zlib-devel openssl-devel tar xz mercurial cmake perl which
+RUN yum install -y autoconf automake g++ gcc gcc-c++ libc6-dev git libtool wget make nasm zlib-devel openssl-devel tar xz mercurial cmake perl which vim mlocate
 
 # ---- Copy ffmpeg build script. -----
 # See https://github.com/flexconstructor/ffmpeg/build_ffmpeg.sh
 COPY          build_ffmpeg.sh /tmp/build_ffmpeg.sh
 # Run build script.
 RUN           bash /tmp/build_ffmpeg.sh
-# Install mlocate
-RUN           yum -y update mlocate
-RUN           yum -y install mlocate
 # Copy ibx264 locations to SharedObjects config.
 RUN           updatedb && locate libx264.so >> /etc/ld.so.conf
 RUN           ldconfig
@@ -45,6 +42,16 @@ RUN chmod +x /etc/init.d/nginx
 RUN chkconfig --add nginx
 RUN chkconfig --level 345 nginx on
 
+#---------- configure nginx -------
+RUN mkdir -p /var/www/free-media-server.com/public_html
+RUN chown -R nginx: /var/www/free-media-server.com/public_html
+RUN chmod 755 /var/www/free-media-server.com/public_html
+RUN mkdir /etc/nginx/sites-available
+RUN mkdir /etc/nginx/sites-enabled
+RUN echo server_names_hash_bucket_size 64; >> /etc/nginx/nginx.conf
+RUN echo include /etc/nginx/sites-enabled/*.conf; >> /etc/nginx/nginx.conf
+COPY nginx/free_media_server.conf /etc/nginx/sites-enabled/
+
 # ------------ install go ---------
 WORKDIR  ${SRC}
 RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
@@ -58,5 +65,6 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 # ------------clean yum -----------
 RUN yum history -y undo last && yum clean all && rm -rf /var/lib/yum/*
 # -----------RUN ------------------
-EXPOSE 80 443
+EXPOSE 80 443 8081 1935
 CMD nginx -s reload
+
