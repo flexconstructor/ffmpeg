@@ -54,6 +54,9 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 
 
 #---------- configure nginx -------
+RUN mkdir -p /var/sock
+RUN chown -R nginx: /var/sock
+RUN chmod 755 /var/sock
 RUN mkdir -p /var/www/free-media-server.com/public_html
 RUN chown -R nginx: /var/www/free-media-server.com/public_html
 RUN chmod 755 /var/www/free-media-server.com/public_html
@@ -65,9 +68,11 @@ RUN mkdir -p /var/www/free-media-server.com/mp4
 RUN chown -R nginx: /var/www/free-media-server.com/mp4
 RUN chmod 755 /var/www/free-media-server.com/mp4
 RUN wget -O /var/www/free-media-server.com/mp4/big_buck_bunny_720p_2mb.mp4 http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_2mb.mp4
-COPY nginx/BarsAndTone.mp4 /var/www/free-media-server.com/mp4/live_test.mp4
 COPY nginx/free_media_server.conf /etc/nginx/nginx.conf
 COPY nginx/index.html /var/www/free-media-server.com/public_html/index.html
+RUN mkdir -p /var/www/free-media-server.com/public_html/temp
+RUN mkdir -p /var/www/free-media-server.com/public_html/temp/hls
+RUN mkdir -p /var/www/free-media-server.com/public_html/temp/dash
 
 # ---------- Video.js-----------------
 
