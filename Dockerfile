@@ -13,6 +13,7 @@ ENV           GOLANG_VERSION 1.5.1
 ENV           GOLANG_DOWNLOAD_URL https://golang.org/dl/go${GOLANG_VERSION}.linux-amd64.tar.gz
 ENV           GOLANG_DOWNLOAD_SHA1 46eecd290d8803887dec718c691cc243f2175fe0
 ENV           GOPATH /go
+ENV           GOBIN ${GOPATH}/bin/
 ENV           PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 ENV           GO_DOCKER_LIB https://github.com/docker-library/golang.git
 
@@ -69,6 +70,17 @@ RUN chown -R nginx: /var/www/free-media-server.com/mp4
 RUN chmod 755 /var/www/free-media-server.com/mp4
 RUN wget -O /var/www/free-media-server.com/mp4/big_buck_bunny_720p_2mb.mp4 http://www.sample-videos.com/video/mp4/720/big_buck_bunny_720p_2mb.mp4
 COPY nginx/free_media_server.conf /etc/nginx/nginx.conf
+RUN mkdir /etc/nginx/sites-available
+RUN mkdir /etc/nginx/sites-enabled
+RUN mkdir /etc/nginx/sites-available/http
+RUN mkdir /etc/nginx/sites-available/rtmp
+RUN mkdir /etc/nginx/sites-enabled/http
+RUN mkdir /etc/nginx/sites-enabled/rtmp
+COPY nginx/free_media_server_http.conf /etc/nginx/sites-available/http/free_media_server_http.conf
+COPY nginx/free_media_server_rtmp.conf /etc/nginx/sites-available/rtmp/free_media_server_rtmp.conf
+RUN ln -s /etc/nginx/sites-available/http/free_media_server_http.conf /etc/nginx/sites-enabled/http/free_media_server_http.conf
+RUN ln -s /etc/nginx/sites-available/rtmp/free_media_server_rtmp.conf /etc/nginx/sites-enabled/rtmp/free_media_server_rtmp.conf
+
 COPY nginx/index.html /var/www/free-media-server.com/public_html/index.html
 RUN mkdir -p /var/www/free-media-server.com/public_html/temp
 RUN mkdir -p /var/www/free-media-server.com/public_html/temp/hls
@@ -84,13 +96,10 @@ RUN mkdir -p /var/www/free-media-server.com/public_html/js/dist
 RUN mkdir -p /var/www/free-media-server.com/public_html/js/dist/videojs
 RUN cp -avr /var/www/free-media-server.com/public_html/js/node_modules/video.js/dist /var/www/free-media-server.com/public_html/js/dist/videojs
 
-
-
-
-
 # ------------clean yum -----------
 RUN yum history -y undo last && yum clean all && rm -rf /var/lib/yum/*
 # -----------RUN ------------------
+
 EXPOSE 80 443 8081 1935
 CMD nginx -s reload
 
