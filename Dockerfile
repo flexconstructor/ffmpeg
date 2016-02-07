@@ -18,8 +18,8 @@ ENV           PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 ENV           GO_DOCKER_LIB https://github.com/docker-library/golang.git
 
 # ------- init dependecies -----------
+
 RUN set -euo pipefail
-RUN yum update -y
 RUN yum install -y autoconf automake g++ gcc gcc-c++ libc6-dev git libtool wget make nasm zlib-devel openssl-devel tar xz mercurial cmake perl which vim mlocate nodejs
 
 # ---- Copy ffmpeg build script. -----
@@ -34,6 +34,7 @@ RUN           ldconfig
 RUN           ffmpeg -buildconf
 
 # ---------- install nginx ----------
+
 WORKDIR       ${SRC}
 COPY nginx_build.sh /tmp/nginx_build.sh
 RUN           bash /tmp/nginx_build.sh
@@ -42,6 +43,7 @@ RUN wget -O /etc/init.d/nginx https://gist.github.com/sairam/5892520/raw/b8195a7
 RUN chmod +x /etc/init.d/nginx
 RUN chkconfig --add nginx
 RUN chkconfig --level 345 nginx on
+
 # ------------ install go ---------
 
 WORKDIR  ${SRC}
@@ -53,8 +55,8 @@ RUN git clone ${GO_DOCKER_LIB}
 RUN cp ${SRC}/golang/go-wrapper /usr/local/bin/
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 
-
 #---------- configure nginx -------
+
 RUN mkdir -p /var/sock
 RUN chown -R nginx: /var/sock
 RUN chmod 755 /var/sock
@@ -80,7 +82,6 @@ COPY nginx/free_media_server_http.conf /etc/nginx/sites-available/http/free_medi
 COPY nginx/free_media_server_rtmp.conf /etc/nginx/sites-available/rtmp/free_media_server_rtmp.conf
 RUN ln -s /etc/nginx/sites-available/http/free_media_server_http.conf /etc/nginx/sites-enabled/http/free_media_server_http.conf
 RUN ln -s /etc/nginx/sites-available/rtmp/free_media_server_rtmp.conf /etc/nginx/sites-enabled/rtmp/free_media_server_rtmp.conf
-
 COPY nginx/index.html /var/www/free-media-server.com/public_html/index.html
 RUN mkdir -p /var/www/free-media-server.com/public_html/temp
 RUN mkdir -p /var/www/free-media-server.com/public_html/temp/hls
@@ -97,7 +98,9 @@ RUN mkdir -p /var/www/free-media-server.com/public_html/js/dist/videojs
 RUN cp -avr /var/www/free-media-server.com/public_html/js/node_modules/video.js/dist /var/www/free-media-server.com/public_html/js/dist/videojs
 
 # ------------clean yum -----------
+
 RUN yum history -y undo last && yum clean all && rm -rf /var/lib/yum/*
+
 # -----------RUN ------------------
 
 EXPOSE 80 443 8081 1935
