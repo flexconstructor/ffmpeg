@@ -42,13 +42,13 @@ RUN set -euo pipefail                       \
                       which                 \
                       vim                   \
                       mlocate               \
-                      nodejs                \
+                      nodejs
 
 # ---- Copy ffmpeg build script. -----
 # See https://github.com/flexconstructor/ffmpeg/build_ffmpeg.sh
 
 # Run build script.
-    && bash /tmp/build_ffmpeg.sh                        \
+RUN bash /tmp/build_ffmpeg.sh                        \
 # Copy ibx264 locations to SharedObjects config.
     && updatedb && locate libx264.so >> /etc/ld.so.conf \
     && ldconfig                                         \
