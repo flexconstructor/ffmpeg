@@ -24,8 +24,8 @@ COPY build_ffmpeg.sh /tmp/build_ffmpeg.sh
 
 # ------- init dependecies -----------
 
-RUN set -euo pipefail                       \
-    && yum install -y autoconf automake g++ \
+RUN set -euo pipefail
+RUN yum install -y autoconf automake g++    \
                       gcc gcc-c++           \
                       libc6-dev git         \
                       libtool               \
@@ -48,7 +48,7 @@ RUN set -euo pipefail                       \
 # See https://github.com/flexconstructor/ffmpeg/build_ffmpeg.sh
 
 # Run build script.
-RUN bash /tmp/build_ffmpeg.sh                        \
+RUN bash /tmp/build_ffmpeg.sh                           \
 # Copy ibx264 locations to SharedObjects config.
     && updatedb && locate libx264.so >> /etc/ld.so.conf \
     && ldconfig                                         \
