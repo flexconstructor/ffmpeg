@@ -24,7 +24,8 @@ COPY build_ffmpeg.sh /tmp/build_ffmpeg.sh
 
 # ------- init dependecies -----------
 
-RUN set -euo pipefail                       \                   \
+RUN set -euo pipefail                       \
+    && yum clean all                        \
     && yum install -y autoconf automake g++ \
                       gcc gcc-c++           \
                       libc6-dev git         \
