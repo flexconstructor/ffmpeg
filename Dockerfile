@@ -2,7 +2,7 @@
 # From https://trac.ffmpeg.org/wiki/CompilationGuide/Centos
 #
 FROM          centos
-MAINTAINER    Julien Rottenberg <julien@rottenberg.info>
+MAINTAINER    Konstantin Kapustin <flexconstructor@gmail.com>
 ENV           YASM_VERSION    1.3.0
 ENV           OGG_VERSION     1.3.2
 ENV           VORBIS_VERSION  1.3.4
@@ -41,8 +41,7 @@ RUN set -euo pipefail                       \
                       cmake                 \
                       perl                  \
                       which                 \
-                      mlocate               \
-                      nodejs
+                      mlocate
 
 # ---- Copy ffmpeg build script. -----
 # See https://github.com/flexconstructor/ffmpeg/build_ffmpeg.sh
@@ -115,7 +114,8 @@ COPY nginx/free_media_server.conf /etc/nginx/nginx.conf
 
 RUN mkdir -p /var/www/free-media-server.com/public_html/js
 WORKDIR /var/www/free-media-server.com/public_html/js
-RUN curl -L https://www.npmjs.com/install.sh | sh                                                                                                   \
+RUN curl -sL https://rpm.nodesource.com/setup | bash -                                                                                              \
+    && yum install -y nodejs                                                                                                                        \
     && npm install --save-dev video.js                                                                                                              \
     && mkdir -p /var/www/free-media-server.com/public_html/js/dist                                                                                  \
     && mkdir -p /var/www/free-media-server.com/public_html/js/dist/videojs                                                                          \
