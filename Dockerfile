@@ -40,7 +40,6 @@ RUN set -euo pipefail                       \                   \
                       cmake                 \
                       perl                  \
                       which                 \
-                      vim                   \
                       mlocate               \
                       nodejs
 
