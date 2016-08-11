@@ -24,7 +24,7 @@ COPY build_ffmpeg.sh /tmp/build_ffmpeg.sh
 
 # ------- init dependecies -----------
 
-RUN set -euo pipefail
+#RUN set -euo pipefail
 RUN yum update -y
 RUN yum install -y autoconf automake g++    \
                       gcc gcc-c++           \
