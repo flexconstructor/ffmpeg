@@ -1,7 +1,7 @@
 # ffmpeg
 # From https://trac.ffmpeg.org/wiki/CompilationGuide/Centos
 #
-FROM          modelboard/centos-supervisord
+FROM          centos
 MAINTAINER    Julien Rottenberg <julien@rottenberg.info>
 ENV           YASM_VERSION    1.3.0
 ENV           OGG_VERSION     1.3.2
@@ -25,7 +25,7 @@ COPY build_ffmpeg.sh /tmp/build_ffmpeg.sh
 # ------- init dependecies -----------
 
 RUN set -euo pipefail                       \
-    && yum clean all                        \
+    && yum update -y                        \
     && yum install -y autoconf automake g++ \
                       gcc gcc-c++           \
                       libc6-dev git         \
